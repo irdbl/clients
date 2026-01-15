@@ -19,6 +19,7 @@ export enum FeatureFlag {
   PM23801_PrefetchPasswordPrelogin = "pm-23801-prefetch-password-prelogin",
 
   /* Autofill */
+  UseUndeterminedCipherScenarioTriggeringLogic = "undetermined-cipher-scenario-logic",
   MacOsNativeCredentialSync = "macos-native-credential-sync",
   WindowsDesktopAutotype = "windows-desktop-autotype",
   WindowsDesktopAutotypeGA = "windows-desktop-autotype-ga",
@@ -102,6 +103,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.IncreaseBulkReinviteLimitForCloud]: FALSE,
 
   /* Autofill */
+  [FeatureFlag.UseUndeterminedCipherScenarioTriggeringLogic]: FALSE,
   [FeatureFlag.MacOsNativeCredentialSync]: FALSE,
   [FeatureFlag.WindowsDesktopAutotype]: FALSE,
   [FeatureFlag.WindowsDesktopAutotypeGA]: FALSE,
