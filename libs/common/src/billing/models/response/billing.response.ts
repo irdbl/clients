@@ -73,3 +73,16 @@ export class BillingTransactionResponse extends BaseResponse {
     this.details = this.getResponseProperty("Details");
   }
 }
+
+/**
+ * Response model for v2 license API that returns only the JWT token.
+ * This is a simplified response format compared to the v1 full license JSON.
+ */
+export class LicenseTokenResponse extends BaseResponse {
+  token: string;
+
+  constructor(response: any) {
+    super(response);
+    this.token = this.getResponseProperty("Token");
+  }
+}

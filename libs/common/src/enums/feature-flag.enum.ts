@@ -33,6 +33,7 @@ export enum FeatureFlag {
   PM23341_Milestone_2 = "pm-23341-milestone-2",
   PM29594_UpdateIndividualSubscriptionPage = "pm-29594-update-individual-subscription-page",
   PM29593_PremiumToOrganizationUpgrade = "pm-29593-premium-to-organization-upgrade",
+  SelfHostLicenseJwtV2 = "selfhost-license-jwt-v2",
 
   /* Key Management */
   PrivateKeyRegeneration = "pm-12241-private-key-regeneration",
@@ -139,6 +140,7 @@ export const DefaultFeatureFlagValue = {
   [FeatureFlag.PM23341_Milestone_2]: FALSE,
   [FeatureFlag.PM29594_UpdateIndividualSubscriptionPage]: FALSE,
   [FeatureFlag.PM29593_PremiumToOrganizationUpgrade]: FALSE,
+  [FeatureFlag.SelfHostLicenseJwtV2]: FALSE,
 
   /* Key Management */
   [FeatureFlag.PrivateKeyRegeneration]: FALSE,

@@ -1,9 +1,13 @@
 // FIXME: Update this file to be type safe and remove this and next line
 // @ts-strict-ignore
-import { Component, Inject } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
+import { firstValueFrom } from "rxjs";
 
 import { OrganizationApiServiceAbstraction } from "@bitwarden/common/admin-console/abstractions/organization/organization-api.service.abstraction";
+import { OrganizationBillingApiServiceAbstraction } from "@bitwarden/common/billing/abstractions/organizations/organization-billing-api.service.abstraction";
+import { FeatureFlag } from "@bitwarden/common/enums/feature-flag.enum";
+import { ConfigService } from "@bitwarden/common/platform/abstractions/config/config.service";
 import { FileDownloadService } from "@bitwarden/common/platform/abstractions/file-download/file-download.service";
 import { DialogConfig, DIALOG_DATA, DialogRef, DialogService } from "@bitwarden/components";
 
@@ -24,17 +28,28 @@ type DownloadLicenseDialogData = {
   templateUrl: "download-license.component.html",
   standalone: false,
 })
-export class DownloadLicenceDialogComponent {
+export class DownloadLicenceDialogComponent implements OnInit {
   licenseForm = this.formBuilder.group({
     installationId: ["", [Validators.required]],
   });
+
+  private useV2License = false;
+
   constructor(
     @Inject(DIALOG_DATA) protected data: DownloadLicenseDialogData,
     private dialogRef: DialogRef,
     private fileDownloadService: FileDownloadService,
     private organizationApiService: OrganizationApiServiceAbstraction,
+    private organizationBillingApiService: OrganizationBillingApiServiceAbstraction,
+    private configService: ConfigService,
     protected formBuilder: FormBuilder,
   ) {}
+
+  async ngOnInit(): Promise<void> {
+    this.useV2License = await firstValueFrom(
+      this.configService.getFeatureFlag$(FeatureFlag.SelfHostLicenseJwtV2),
+    );
+  }
 
   submit = async () => {
     this.licenseForm.markAllAsTouched();
@@ -42,10 +57,22 @@ export class DownloadLicenceDialogComponent {
     if (installationId == null || installationId === "") {
       return;
     }
-    const license = await this.organizationApiService.getLicense(
-      this.data.organizationId,
-      installationId,
-    );
+
+    let license: unknown;
+    if (this.useV2License) {
+      // v2: Returns { token: "..." } - simplified format
+      license = await this.organizationBillingApiService.getLicenseToken(
+        this.data.organizationId,
+        installationId,
+      );
+    } else {
+      // v1: Returns full license JSON (unchanged behavior)
+      license = await this.organizationApiService.getLicense(
+        this.data.organizationId,
+        installationId,
+      );
+    }
+
     const licenseString = JSON.stringify(license, null, 2);
     this.fileDownloadService.download({
       fileName: "bitwarden_organization_license.json",

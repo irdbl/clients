@@ -3,6 +3,7 @@ import { ChangePlanFrequencyRequest } from "@bitwarden/common/billing/models/req
 import {
   BillingInvoiceResponse,
   BillingTransactionResponse,
+  LicenseTokenResponse,
 } from "../../models/response/billing.response";
 
 export abstract class OrganizationBillingApiServiceAbstraction {
@@ -31,4 +32,12 @@ export abstract class OrganizationBillingApiServiceAbstraction {
     organizationId: string,
     request: ChangePlanFrequencyRequest,
   ) => Promise<void>;
+
+  /**
+   * Gets an organization license token (v2 format) from the cloud server.
+   * Returns only the JWT token instead of the full license JSON.
+   * @param id The organization ID
+   * @param installationId The installation ID for the self-hosted server
+   */
+  abstract getLicenseToken: (id: string, installationId: string) => Promise<LicenseTokenResponse>;
 }

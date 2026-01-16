@@ -5,6 +5,7 @@ import { OrganizationBillingApiServiceAbstraction } from "../../abstractions/org
 import {
   BillingInvoiceResponse,
   BillingTransactionResponse,
+  LicenseTokenResponse,
 } from "../../models/response/billing.response";
 
 export class OrganizationBillingApiService implements OrganizationBillingApiServiceAbstraction {
@@ -83,5 +84,16 @@ export class OrganizationBillingApiService implements OrganizationBillingApiServ
       true,
       false,
     );
+  }
+
+  async getLicenseToken(id: string, installationId: string): Promise<LicenseTokenResponse> {
+    const r = await this.apiService.send(
+      "GET",
+      `/licenses/v2/organization/${id}?installationId=${installationId}`,
+      null,
+      true,
+      true,
+    );
+    return new LicenseTokenResponse(r);
   }
 }
