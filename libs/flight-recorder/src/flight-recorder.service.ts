@@ -46,10 +46,13 @@ export class FlightRecorderService {
   exportAsPlainText(): string {
     const events = this.drain();
     return events
-      .map(
-        (e) =>
-          `[${new Date(e.timestamp).toISOString()}] ${e.level.toUpperCase()} ${e.target}: ${e.message}`,
-      )
+      .map((e) => {
+        const fieldsStr = Object.entries(e.fields)
+          .map(([k, v]) => `${k}=${v}`)
+          .join(" ");
+        const fieldsSuffix = fieldsStr ? ` [${fieldsStr}]` : "";
+        return `[${new Date(e.timestamp).toISOString()}] ${e.level.toUpperCase()} ${e.target}: ${e.message}${fieldsSuffix}`;
+      })
       .join("\n");
   }
 }

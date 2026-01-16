@@ -109,6 +109,24 @@ describe("FlightRecorderService", () => {
       expect(result).toContain("Test message");
     });
 
+    it("includes fields in plain text output", () => {
+      const mockEvents: FlightRecorderLogData[] = [
+        {
+          timestamp: 1704067200000,
+          level: "info",
+          target: "test",
+          message: "Test",
+          fields: { user_id: "123", action: "login" },
+        },
+      ];
+      mockDrain.mockReturnValue(mockEvents);
+
+      const result = service.exportAsPlainText();
+
+      expect(result).toContain("[user_id=123");
+      expect(result).toContain("action=login");
+    });
+
     it("returns empty string when no events", () => {
       mockDrain.mockReturnValue([]);
 
